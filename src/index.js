@@ -4,12 +4,19 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
-import rootReducer from "./modules";
+import rootReducer, { rootSaga } from "./modules";
+import createSagaMiddleware from "@redux-saga/core";
 import { composeWithDevTools } from "redux-devtools-extension";
 
-const store = createStore(rootReducer, composeWithDevTools());
+const segaMiddleware = createSagaMiddleware();
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(segaMiddleware)),
+);
+
+segaMiddleware.run(rootSaga);
 
 ReactDOM.render(
   <Provider store={store}>
