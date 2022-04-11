@@ -9,20 +9,25 @@ import { Provider } from "react-redux";
 import rootReducer, { rootSaga } from "./modules";
 import createSagaMiddleware from "@redux-saga/core";
 import { composeWithDevTools } from "redux-devtools-extension";
+import { persistStore } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
 
 const segaMiddleware = createSagaMiddleware();
 const store = createStore(
   rootReducer,
   composeWithDevTools(applyMiddleware(segaMiddleware)),
 );
+const persistor = persistStore(store);
 
 segaMiddleware.run(rootSaga);
 
 ReactDOM.render(
   <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <PersistGate loading={null} persistor={persistor}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </PersistGate>
   </Provider>,
 
   document.getElementById("root"),
